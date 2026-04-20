@@ -946,11 +946,11 @@
             }
 
             .hero-flight {
-                opacity: 0.72;
+                opacity: 0.42;
             }
 
             .hero-flight-bee text {
-                font-size: 24px;
+                font-size: 16px;
             }
 
             .hero h1 {
@@ -972,7 +972,7 @@
             }
 
             .hero-visual {
-                min-height: 340px;
+                min-height: 0;
             }
 
             .hero-logo-stage {
@@ -980,14 +980,19 @@
                 right: auto;
                 bottom: auto;
                 margin: 0 auto;
-                width: min(220px, 62vw);
-                height: min(220px, 62vw);
+                width: min(360px, 92vw);
+                height: auto;
+                justify-content: center;
+                align-items: center;
+                background: radial-gradient(circle at 50% 50%, rgba(255, 208, 40, 0.1), rgba(255, 208, 40, 0.02) 38%, rgba(255, 208, 40, 0) 72%);
             }
 
             .hero-logo {
-                max-width: 170px;
-                transform: scale(3);
-                transform-origin: bottom center;
+                width: 100%;
+                max-width: min(360px, 92vw);
+                transform: none;
+                transform-origin: center;
+                filter: brightness(1.04) contrast(1.06) saturate(1.04) drop-shadow(0 14px 24px rgba(0, 0, 0, 0.34));
             }
 
             .features h2,
@@ -1085,12 +1090,11 @@
             }
 
             .hero-logo-stage {
-                width: min(180px, 58vw);
-                height: min(180px, 58vw);
+                width: min(320px, 90vw);
             }
 
             .hero-logo {
-                max-width: 138px;
+                max-width: min(320px, 90vw);
             }
 
             .product-card-image {
