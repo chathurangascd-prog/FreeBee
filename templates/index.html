@@ -34,6 +34,10 @@
             padding: 14px;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         .cursor-trail {
             position: fixed;
             inset: 0;
@@ -440,6 +444,7 @@
         }
 
         .card {
+            position: relative;
             width: 280px;
             padding: 2rem;
             text-align: left;
@@ -447,12 +452,46 @@
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
             border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+            overflow: hidden;
+            transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: auto -40px -56px auto;
+            width: 140px;
+            height: 140px;
+            border-radius: 999px;
+            background: radial-gradient(circle at center, rgba(255, 208, 40, 0.2), rgba(255, 208, 40, 0) 72%);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.28s ease, transform 0.28s ease;
         }
 
         .card-icon {
+            display: inline-block;
             color: var(--accent);
             font-size: 2rem;
             margin-bottom: 1rem;
+            transition: transform 0.28s ease, filter 0.28s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 208, 40, 0.18);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 208, 40, 0.03));
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.32);
+        }
+
+        .card:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .card:hover .card-icon {
+            transform: translateY(-3px) scale(1.08);
+            filter: drop-shadow(0 0 10px rgba(255, 208, 40, 0.3));
         }
 
         .card h3 {
@@ -561,11 +600,24 @@
         }
 
         .product-card {
+            position: relative;
             overflow: hidden;
             border-radius: 24px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
             border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .product-card::after {
+            content: '';
+            position: absolute;
+            inset: auto -48px -64px auto;
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            background: radial-gradient(circle at center, rgba(255, 208, 40, 0.24), rgba(255, 208, 40, 0) 72%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .product-card-image {
@@ -638,6 +690,24 @@
 
         .product-card p {
             color: var(--muted);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .product-card:hover {
+                border-color: rgba(255, 208, 40, 0.18);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24), 0 0 24px rgba(255, 208, 40, 0.12);
+            }
+
+            .product-card:hover::after {
+                opacity: 1;
+            }
+
+            .product-card:hover .product-badge,
+            .product-card:hover .product-card-price,
+            .product-card:hover .product-card-featured {
+                text-shadow: 0 0 12px rgba(255, 208, 40, 0.28);
+            }
         }
 
         .admin-section {
@@ -848,6 +918,13 @@
             text-decoration: none;
         }
 
+        .section-anchor,
+        .hero,
+        .about,
+        .footer {
+            scroll-margin-top: 110px;
+        }
+
         @media (max-width: 980px) {
             .hero-shell {
                 grid-template-columns: 1fr;
@@ -946,11 +1023,7 @@
             }
 
             .hero-flight {
-                opacity: 0.42;
-            }
-
-            .hero-flight-bee text {
-                font-size: 16px;
+                display: none;
             }
 
             .hero h1 {
@@ -1135,15 +1208,15 @@
                 <span class="brand-name">FreeBee</span>
             </a>
             <div class="nav-links">
-                <a href="/" class="active">Home</a>
-                <a href="#">Collections</a>
-                <a href="#">New Arrivals</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
+                <a href="#home" class="active">Home</a>
+                <a href="#collections">Collections</a>
+                <a href="#new-arrivals">New Arrivals</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
             </div>
         </div>
 
-        <div class="hero">
+        <div class="hero" id="home">
             <div class="hero-flight" aria-hidden="true">
                 <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
                     <path class="hero-flight-trail-glow" d="M 56 142 C 132 48, 248 52, 334 126 S 494 270, 620 250 S 830 106, 956 170"></path>
@@ -1213,7 +1286,8 @@
             </div>
         </div>
 
-        <div class="product-section" id="collections">
+        <div class="product-section" id="new-arrivals">
+            <div id="collections" class="section-anchor" aria-hidden="true"></div>
             <div class="product-section-header">
                 <div class="product-section-copy">
                     <h2>FreeBee Collection</h2>
@@ -1243,7 +1317,7 @@
             </div>
         </div>
 
-        <div class="about">
+        <div class="about" id="about">
             <div class="about-shell">
                 <h2>About FreeBee</h2>
                 <p class="about-summary">FreeBee is a modern fashion storefront concept focused on bold visuals, curated collections, and a premium digital shopping experience.</p>
@@ -1277,7 +1351,7 @@
             </div>
         </div>
 
-        <div class="footer">
+        <div class="footer" id="contact">
             <p>FreeBee - Style Without Limits</p>
             <p>&copy; 2026 FreeBee. All rights reserved.</p>
             <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
