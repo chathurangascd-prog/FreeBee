@@ -1181,6 +1181,14 @@
                 position: static;
             }
 
+            .admin-products-toolbar,
+            .admin-undo,
+            .admin-summary-top,
+            .admin-product-head,
+            .activity-item-head {
+                align-items: flex-start;
+            }
+
             .admin-preview.admin-preview-product img {
                 min-height: 220px;
             }
@@ -1205,8 +1213,13 @@
                 padding-top: 32px;
             }
 
+            .admin-section::before {
+                display: none;
+            }
+
             .nav {
                 flex-direction: column;
+                align-items: stretch;
                 gap: 1rem;
             }
 
@@ -1231,8 +1244,36 @@
                 width: 100%;
             }
 
+            .admin-tab-button,
+            .nav-inline-form,
+            .nav-link-button {
+                width: 100%;
+            }
+
+            .admin-tabs,
+            .admin-products-toolbar,
+            .admin-undo,
+            .admin-summary-top,
+            .admin-product-head,
+            .activity-item-head,
+            .admin-activity-list-head {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .admin-filter-form,
+            .admin-header-mini-grid,
+            .admin-summary-grid,
+            .admin-activity-meta {
+                grid-template-columns: 1fr;
+            }
+
             .admin-header-shell {
                 padding: 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 2.2rem;
             }
 
             .admin-header-card,
@@ -1241,6 +1282,13 @@
             .admin-products,
             .admin-activity {
                 border-radius: 22px;
+            }
+
+            .admin-login-card,
+            .admin-panel,
+            .admin-products,
+            .admin-activity {
+                padding: 1rem;
             }
 
             .admin-edit-grid {
@@ -1269,6 +1317,51 @@
             .admin-header-mini-grid,
             .admin-summary-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .toast-stack {
+                top: 14px;
+                right: 14px;
+                left: 14px;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .brand,
+            .nav-links {
+                justify-content: center;
+            }
+
+            .nav-links {
+                display: grid;
+                grid-template-columns: 1fr;
+                width: 100%;
+                text-align: center;
+            }
+
+            .admin-section {
+                padding-top: 24px;
+                padding-bottom: 48px;
+            }
+
+            .admin-header-card-value {
+                font-size: 2rem;
+            }
+
+            .admin-preview img,
+            .admin-preview.admin-preview-product img {
+                height: 180px;
+                min-height: 180px;
+            }
+
+            .admin-product-card,
+            .activity-item,
+            .admin-summary-card,
+            .admin-header-card,
+            .admin-activity-intro,
+            .admin-activity-list-shell {
+                padding: 0.9rem;
             }
         }
     </style>

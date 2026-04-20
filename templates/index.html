@@ -851,6 +851,7 @@
         @media (max-width: 980px) {
             .hero-shell {
                 grid-template-columns: 1fr;
+                gap: 2.5rem;
             }
 
             .product-section-header {
@@ -870,8 +871,13 @@
                 text-align: center;
             }
 
+            .product-metrics {
+                justify-content: center;
+            }
+
             .hero-visual {
                 min-height: 460px;
+                justify-content: center;
             }
 
             .hero-logo-stage {
@@ -916,6 +922,7 @@
 
             .nav {
                 flex-direction: column;
+                align-items: stretch;
                 gap: 1rem;
             }
 
@@ -928,6 +935,10 @@
             .hero {
                 padding-top: 42px;
                 padding-bottom: 56px;
+            }
+
+            .hero-shell {
+                gap: 2rem;
             }
 
             .hero::after {
@@ -946,6 +957,12 @@
                 font-size: 3rem;
             }
 
+            .hero p {
+                font-size: 0.98rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
             .hero-actions {
                 justify-content: center;
             }
@@ -955,7 +972,7 @@
             }
 
             .hero-visual {
-                min-height: 420px;
+                min-height: 340px;
             }
 
             .hero-logo-stage {
@@ -963,14 +980,54 @@
                 right: auto;
                 bottom: auto;
                 margin: 0 auto;
-                width: 220px;
-                height: 220px;
+                width: min(220px, 62vw);
+                height: min(220px, 62vw);
             }
 
             .hero-logo {
                 max-width: 170px;
                 transform: scale(3);
                 transform-origin: bottom center;
+            }
+
+            .features h2,
+            .about h2,
+            .product-section-copy h2,
+            .admin-panel h2,
+            .admin-products h2 {
+                font-size: 2rem;
+            }
+
+            .feature-box,
+            .stats-container {
+                gap: 1rem;
+            }
+
+            .card,
+            .stat-item,
+            .product-metric {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-card-image {
+                height: 260px;
+            }
+
+            .product-card-meta,
+            .admin-product-head {
+                flex-wrap: wrap;
+            }
+
+            .admin-panel,
+            .admin-products,
+            .admin-product-card {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
             .video-showcase {
@@ -994,6 +1051,62 @@
                 }
             }
 
+        }
+
+        @media (max-width: 560px) {
+            .nav-links {
+                display: grid;
+                grid-template-columns: 1fr;
+                width: 100%;
+                text-align: center;
+            }
+
+            .brand {
+                justify-content: center;
+            }
+
+            .hero {
+                padding-top: 34px;
+                padding-bottom: 44px;
+            }
+
+            .hero-flight,
+            .hero-lines {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.45rem;
+            }
+
+            .eyebrow {
+                font-size: 0.74rem;
+                letter-spacing: 0.08em;
+            }
+
+            .hero-logo-stage {
+                width: min(180px, 58vw);
+                height: min(180px, 58vw);
+            }
+
+            .hero-logo {
+                max-width: 138px;
+            }
+
+            .product-card-image {
+                height: 220px;
+            }
+
+            .product-card-body,
+            .card,
+            .stat-item,
+            .product-metric {
+                padding: 1rem;
+            }
+
+            .video-showcase-frame {
+                min-height: 200px;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
