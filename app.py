@@ -7,20 +7,22 @@ from io import StringIO, TextIOWrapper
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from flask import Flask, Response, flash, jsonify, redirect, render_template, request, session, url_for
+from flask import Flask, Response, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'freebee-admin'
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE_PATH = BASE_DIR / 'fashion_store.db'
 STATIC_DIR = BASE_DIR / 'static'
-UPLOADS_DIR = STATIC_DIR / 'uploads'
+STORAGE_DIR = Path(os.environ.get('FREEBEE_STORAGE_DIR', str(BASE_DIR)))
+DATABASE_PATH = Path(os.environ.get('FREEBEE_DB_PATH', str(STORAGE_DIR / 'fashion_store.db')))
+UPLOADS_DIR = Path(os.environ.get('FREEBEE_UPLOADS_DIR', str(STORAGE_DIR / 'uploads')))
 ALLOWED_IMAGE_SUFFIXES = {'.png', '.jpg', '.jpeg', '.gif', '.webp'}
 ACTIVITY_TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 LOW_STOCK_THRESHOLD = 10
+
+app.secret_key = os.environ.get('FREEBEE_SECRET_KEY') or os.environ.get('FLASK_SECRET_KEY', 'freebee-admin-dev')
 
 
 def load_app_timezone():
@@ -130,6 +132,7 @@ def serialize_activity_row(row):
 
 
 def init_db():
+    DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
     UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
     connection = get_db_connection()
     connection.execute(
@@ -407,10 +410,21 @@ def set_product_featured(product_id, featured):
 
 def get_image_options():
     image_paths = []
+    seen_paths = set()
 
     for file_path in sorted(STATIC_DIR.rglob('*')):
         if file_path.is_file() and file_path.suffix.lower() in ALLOWED_IMAGE_SUFFIXES:
-            image_paths.append(file_path.relative_to(STATIC_DIR).as_posix())
+            relative_path = file_path.relative_to(STATIC_DIR).as_posix()
+            if relative_path not in seen_paths:
+                image_paths.append(relative_path)
+                seen_paths.add(relative_path)
+
+    for file_path in sorted(UPLOADS_DIR.rglob('*')):
+        if file_path.is_file() and file_path.suffix.lower() in ALLOWED_IMAGE_SUFFIXES:
+            relative_path = f"media/{file_path.relative_to(UPLOADS_DIR).as_posix()}"
+            if relative_path not in seen_paths:
+                image_paths.append(relative_path)
+                seen_paths.add(relative_path)
 
     return image_paths
 
@@ -439,7 +453,30 @@ def save_uploaded_image(uploaded_file):
 
     filename = build_unique_upload_name(uploaded_file.filename)
     uploaded_file.save(UPLOADS_DIR / filename)
-    return f'uploads/{filename}'
+    return f'media/{filename}'
+
+
+def resolve_asset_url(path):
+    if not path:
+        return url_for('static', filename='uploads/user.png')
+
+    if path.startswith(('http://', 'https://')):
+        return path
+
+    normalized_path = path.lstrip('/')
+
+    if normalized_path.startswith('media/'):
+        return url_for('uploaded_media', filename=normalized_path.removeprefix('media/'))
+
+    return url_for('static', filename=normalized_path)
+
+
+@app.context_processor
+def inject_asset_helpers():
+    return {
+        'asset_url': resolve_asset_url,
+        'media_base_url': url_for('uploaded_media', filename=''),
+    }
 
 
 def parse_product_form(form_data, uploaded_file=None):
@@ -567,6 +604,11 @@ def home():
     products = get_products(limit=4)
     metrics = get_product_metrics()
     return render_template('index.html', products=products, metrics=metrics)
+
+
+@app.route('/media/<path:filename>')
+def uploaded_media(filename):
+    return send_from_directory(UPLOADS_DIR, filename)
 
 
 @app.route('/admin')
@@ -866,9 +908,10 @@ def import_products_csv():
     return redirect(url_for('admin', _anchor='admin-panel'))
 
 if __name__ == '__main__':
-    host = '127.0.0.1'
-    port = 5000
-    debug = True
+    host = os.environ.get('FREEBEE_HOST', '0.0.0.0' if os.environ.get('PORT') else '127.0.0.1')
+    port = int(os.environ.get('PORT', os.environ.get('FREEBEE_PORT', 5000)))
+    debug_setting = os.environ.get('FLASK_DEBUG')
+    debug = (not os.environ.get('PORT')) if debug_setting is None else debug_setting.lower() in {'1', 'true', 'yes', 'on'}
 
     print(f'Home URL: http://{host}:{port}/', flush=True)
     print(f'Admin URL: http://{host}:{port}/admin/login', flush=True)

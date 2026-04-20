@@ -1519,7 +1519,7 @@
                 {% for product in products %}
                 <article class="product-card">
                     <div class="product-card-image">
-                        <img src="{{ url_for('static', filename=product.image_filename) }}" alt="{{ product.name }}">
+                        <img src="{{ asset_url(product.image_filename) }}" alt="{{ product.name }}">
                         <span class="product-badge">{{ product.accent_label }}</span>
                     </div>
                     <div class="product-card-body">

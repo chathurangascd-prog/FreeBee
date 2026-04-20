@@ -1553,9 +1553,9 @@
                 <div class="admin-panel">
                     <span class="admin-section-tag">Create Product</span>
                     <h2>Add Product</h2>
-                    <p>Create a new product directly in the SQLite catalog. Use a static image path like uploads/user.png or any file inside static.</p>
+                    <p>Create a new product directly in the catalog. Static images can come from the app bundle, and newly uploaded images are saved under the persistent media storage.</p>
                     <div class="admin-preview">
-                        <img src="{{ url_for('static', filename='uploads/user.png') }}" alt="New product preview" data-preview-target="new-product-preview">
+                        <img src="{{ asset_url('uploads/user.png') }}" alt="New product preview" data-preview-target="new-product-preview">
                         <span class="admin-preview-label">Live preview for the image path above</span>
                     </div>
                     <form method="post" action="{{ url_for('add_product') }}" class="admin-form" enctype="multipart/form-data">
@@ -1594,7 +1594,7 @@
                         <div class="admin-field">
                             <label for="new-upload-image">Browse New Image</label>
                             <input class="admin-input" id="new-upload-image" name="upload_image" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" data-preview-file="new-product-preview" data-preview-select="new-image">
-                            <span class="admin-upload-note">Choose a file to copy it into uploads and attach it automatically.</span>
+                            <span class="admin-upload-note">Choose a file to save it into the persistent media storage and attach it automatically.</span>
                         </div>
                         <div class="admin-field">
                             <label for="new-badge">Badge Label</label>
@@ -1691,7 +1691,7 @@
                             </div>
                             <div class="admin-product-layout">
                                 <div class="admin-preview admin-preview-product">
-                                    <img src="{{ url_for('static', filename=product.image_filename) }}" alt="{{ product.name }} preview" data-preview-target="product-preview-{{ product.id }}">
+                                    <img src="{{ asset_url(product.image_filename) }}" alt="{{ product.name }} preview" data-preview-target="product-preview-{{ product.id }}">
                                     <span class="admin-preview-label">Current image preview</span>
                                 </div>
                                 <div class="admin-product-content">
@@ -1732,7 +1732,7 @@
                                             <div class="admin-field">
                                                 <label for="upload-image-{{ product.id }}">Browse New Image</label>
                                                 <input class="admin-input" id="upload-image-{{ product.id }}" name="upload_image" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" data-preview-file="product-preview-{{ product.id }}" data-preview-select="image-{{ product.id }}">
-                                                <span class="admin-upload-note">Choose a file to copy it into uploads and replace the selected image.</span>
+                                                <span class="admin-upload-note">Choose a file to save it into the persistent media storage and replace the selected image.</span>
                                             </div>
                                             <div class="admin-field">
                                                 <label for="badge-{{ product.id }}">Badge Label</label>
@@ -1869,6 +1869,8 @@
     <script>
         (function () {
             const staticBase = {{ url_for('static', filename='')|tojson }};
+            const mediaBase = {{ media_base_url|tojson }};
+            const fallbackImage = {{ asset_url('uploads/user.png')|tojson }};
             const previewInputs = document.querySelectorAll('[data-preview-input]');
             const previewFiles = document.querySelectorAll('[data-preview-file]');
             const clickClearFields = document.querySelectorAll('[data-select-on-focus]');
@@ -1883,11 +1885,15 @@
                 const trimmed = value.trim();
 
                 if (!trimmed) {
-                    return `${staticBase}uploads/user.png`;
+                    return fallbackImage;
                 }
 
                 if (/^https?:\/\//i.test(trimmed)) {
                     return trimmed;
+                }
+
+                if (trimmed.startsWith('media/')) {
+                    return `${mediaBase}${trimmed.replace(/^media\//, '')}`;
                 }
 
                 return `${staticBase}${trimmed.replace(/^\/+/, '')}`;
@@ -1908,7 +1914,7 @@
                 input.addEventListener('input', syncPreview);
                 input.addEventListener('change', syncPreview);
                 previewImage.addEventListener('error', () => {
-                    previewImage.src = `${staticBase}uploads/user.png`;
+                    previewImage.src = fallbackImage;
                 });
                 syncPreview();
             });

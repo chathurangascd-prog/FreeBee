@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: freebee
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    disk:
+      name: freebee-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: FREEBEE_SECRET_KEY
+        generateValue: true
+      - key: FREEBEE_ADMIN_PASSWORD
+        sync: false
+      - key: FREEBEE_STORAGE_DIR
+        value: /var/data/freebee
