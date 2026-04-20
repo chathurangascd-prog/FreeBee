@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeBee Admin</title>
+    <style>
+        :root {
+            --bg: #111111;
+            --panel: rgba(255, 255, 255, 0.04);
+            --panel-strong: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f4f1e8;
+            --muted: #aaa59a;
+            --accent: #ffd028;
+            --accent-soft: rgba(255, 208, 40, 0.16);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(255, 208, 40, 0.06), transparent 30%),
+                linear-gradient(180deg, #1a1a1a 0%, #111111 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 14px;
+        }
+
+        .page-shell {
+            max-width: 1440px;
+            margin: 0 auto;
+            border-radius: 28px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 26px 38px;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            color: var(--accent);
+            font-size: 1.35rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.2rem;
+        }
+
+        .nav-inline-form {
+            display: inline-flex;
+        }
+
+        .nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.98rem;
+            transition: color 0.25s ease;
+        }
+
+        .nav-link-button {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font: inherit;
+            cursor: pointer;
+            transition: color 0.25s ease;
+        }
+
+        .nav a:hover,
+        .nav a.active,
+        .nav-link-button:hover {
+            color: var(--text);
+        }
+
+        .nav-link-button.is-logout {
+            color: #ff8f8f;
+        }
+
+        .nav-link-button.is-logout:hover {
+            color: #ffd0d0;
+        }
+
+        .admin-section {
+            position: relative;
+            padding: 64px 38px 80px;
+            background: #141414;
+        }
+
+        .admin-section::before {
+            content: '';
+            position: absolute;
+            inset: 24px 28px auto auto;
+            width: 240px;
+            height: 240px;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: radial-gradient(circle at center, rgba(255, 208, 40, 0.08), transparent 68%);
+            transform: rotate(18deg);
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        .admin-header {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto 1.8rem;
+        }
+
+        .admin-header-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+            gap: 1rem;
+            padding: 1.35rem;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background:
+                linear-gradient(135deg, rgba(255, 208, 40, 0.1), transparent 36%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+        }
+
+        .admin-header-copy {
+            padding: 0.45rem;
+        }
+
+        .admin-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.42rem 0.88rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--accent);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .admin-header h1 {
+            font-size: clamp(2.6rem, 5vw, 4rem);
+            line-height: 0.98;
+            margin-bottom: 0.85rem;
+        }
+
+        .admin-header p {
+            max-width: 760px;
+            color: var(--muted);
+        }
+
+        .admin-header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.25rem;
+        }
+
+        .admin-header-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.72rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.92rem;
+        }
+
+        .admin-header-card {
+            padding: 1.25rem;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(8, 8, 8, 0.42);
+            display: grid;
+            gap: 0.85rem;
+            align-content: start;
+        }
+
+        .admin-header-card-label {
+            color: var(--muted);
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .admin-header-card-value {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1;
+            color: var(--accent);
+        }
+
+        .admin-header-card p {
+            color: var(--muted);
+            max-width: 28ch;
+        }
+
+        .admin-header-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.7rem;
+        }
+
+        .admin-header-mini-item {
+            padding: 0.85rem 0.9rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .admin-header-mini-item span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .admin-header-mini-item strong {
+            font-size: 1.2rem;
+            color: var(--text);
+        }
+
+        .admin-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
+            gap: 1.2rem;
+            align-items: start;
+        }
+
+        .admin-login-shell {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .admin-login-card,
+        .admin-panel,
+        .admin-products,
+        .admin-summary-card {
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .admin-login-card {
+            padding: 1.8rem;
+        }
+
+        .admin-panel {
+            padding: 1.6rem;
+            position: sticky;
+            top: 20px;
+            overflow: hidden;
+        }
+
+        .admin-summary-grid {
+            max-width: 1200px;
+            margin: 0 auto 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .admin-summary-card {
+            position: relative;
+            padding: 1.1rem 1.15rem;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .admin-summary-card::after {
+            content: '';
+            position: absolute;
+            inset: auto -30px -38px auto;
+            width: 110px;
+            height: 110px;
+            border-radius: 999px;
+            background: radial-gradient(circle at center, rgba(255, 208, 40, 0.18), transparent 72%);
+            pointer-events: none;
+        }
+
+        .admin-summary-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 208, 40, 0.18);
+        }
+
+        .admin-tabs {
+            max-width: 1200px;
+            margin: 0 auto 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1rem 1.1rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+        }
+
+        .admin-tabs-copy {
+            display: grid;
+            gap: 0.25rem;
+        }
+
+        .admin-tabs-copy strong {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .admin-tabs-copy span {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .admin-tab-buttons {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab-button {
+            padding: 0.9rem 1.25rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            font: inherit;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+        }
+
+        .admin-tab-button.is-active {
+            color: #111111;
+            background: var(--accent);
+            border-color: rgba(255, 208, 40, 0.36);
+        }
+
+        .admin-tab-panel {
+            display: none;
+        }
+
+        .admin-tab-panel.is-active {
+            display: block;
+        }
+
+        .admin-tab-panel-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-summary-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .admin-summary-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .admin-summary-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.1rem;
+            height: 2.1rem;
+            padding: 0 0.55rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+        }
+
+        .admin-summary-value {
+            color: var(--accent);
+            font-size: 1.65rem;
+            font-weight: 700;
+        }
+
+        .admin-summary-note {
+            display: block;
+            margin-top: 0.35rem;
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .admin-panel h2,
+        .admin-products h2 {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .admin-panel p,
+        .admin-products p,
+        .admin-field label,
+        .flash-item {
+            color: var(--muted);
+        }
+
+        .admin-form,
+        .admin-edit-form {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .admin-form {
+            margin-top: 1.4rem;
+        }
+
+        .admin-field {
+            display: grid;
+            gap: 0.4rem;
+        }
+
+        .admin-field label {
+            font-size: 0.86rem;
+            letter-spacing: 0.03em;
+        }
+
+        .admin-input,
+        .admin-textarea {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font: inherit;
+        }
+
+        .admin-select {
+            appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%), linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+            background-position: calc(100% - 22px) calc(50% - 3px), calc(100% - 16px) calc(50% - 3px);
+            background-size: 6px 6px, 6px 6px;
+            background-repeat: no-repeat;
+            padding-right: 3rem;
+        }
+
+        .admin-input:focus,
+        .admin-textarea:focus {
+            outline: none;
+            border-color: rgba(255, 208, 40, 0.55);
+            box-shadow: 0 0 0 1px rgba(255, 208, 40, 0.18);
+        }
+
+        .admin-input::placeholder,
+        .admin-textarea::placeholder {
+            color: #7f7b72;
+        }
+
+        .admin-textarea {
+            min-height: 116px;
+            resize: vertical;
+        }
+
+        .admin-hint {
+            margin-top: 0.9rem;
+            font-size: 0.9rem;
+        }
+
+        .admin-section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 0.8rem;
+            padding: 0.38rem 0.82rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            font-size: 0.78rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .admin-undo {
+            max-width: 1200px;
+            margin: 0 auto 1.25rem;
+            padding: 1rem 1.1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 208, 40, 0.2);
+            background: rgba(255, 208, 40, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-undo strong {
+            color: var(--text);
+        }
+
+        .admin-preview {
+            overflow: hidden;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .admin-preview img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .admin-preview-label {
+            display: block;
+            padding: 0.8rem 1rem;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .admin-upload-note {
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .toast-stack {
+            position: fixed;
+            top: 22px;
+            right: 22px;
+            z-index: 10000;
+            display: grid;
+            gap: 0.75rem;
+            width: min(360px, calc(100vw - 32px));
+        }
+
+        .toast {
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(20, 20, 20, 0.94);
+            color: var(--text);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: toastIn 0.28s ease forwards;
+        }
+
+        .toast.success {
+            border-color: rgba(255, 208, 40, 0.24);
+        }
+
+        .toast.error {
+            border-color: rgba(255, 112, 112, 0.24);
+        }
+
+        .toast-title {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        @keyframes toastIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flash-list {
+            list-style: none;
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1.2rem;
+        }
+
+        .flash-item {
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 600;
+        }
+
+        .flash-item.success {
+            background: rgba(255, 208, 40, 0.12);
+            color: var(--accent);
+        }
+
+        .flash-item.error {
+            background: rgba(255, 112, 112, 0.12);
+            color: #ff9c9c;
+        }
+
+        .admin-products {
+            padding: 1.6rem;
+            min-width: 0;
+        }
+
+        .admin-product-list {
+            margin-top: 1.5rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .admin-product-list.is-dragging .admin-product-card {
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .admin-product-card {
+            padding: 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 18px 34px rgba(0, 0, 0, 0.14);
+        }
+
+        .admin-product-card.dragging {
+            opacity: 0.55;
+            border-color: rgba(255, 208, 40, 0.45);
+            background: rgba(255, 208, 40, 0.05);
+        }
+
+        .admin-product-card.is-featured {
+            border-color: rgba(255, 208, 40, 0.28);
+            box-shadow: inset 0 0 0 1px rgba(255, 208, 40, 0.08);
+        }
+
+        .admin-product-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-product-layout {
+            display: grid;
+            grid-template-columns: minmax(220px, 250px) minmax(0, 1fr);
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .admin-product-content {
+            min-width: 0;
+        }
+
+        .admin-product-head h3 {
+            font-size: 1.1rem;
+        }
+
+        .admin-product-id {
+            color: var(--accent);
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .admin-product-topline {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .drag-handle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: grab;
+            user-select: none;
+        }
+
+        .featured-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(255, 208, 40, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 208, 40, 0.16);
+        }
+
+        .featured-pill.is-off {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .admin-preview.admin-preview-product img {
+            height: 100%;
+            min-height: 280px;
+        }
+
+        .stock-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stock-pill.in-stock {
+            background: rgba(84, 214, 122, 0.1);
+            color: #98f1ae;
+            border-color: rgba(84, 214, 122, 0.22);
+        }
+
+        .stock-pill.low-stock {
+            background: rgba(255, 208, 40, 0.1);
+            color: var(--accent);
+            border-color: rgba(255, 208, 40, 0.18);
+        }
+
+        .stock-pill.out-of-stock {
+            background: rgba(255, 112, 112, 0.12);
+            color: #ffb0b0;
+            border-color: rgba(255, 112, 112, 0.2);
+        }
+
+        .admin-edit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem;
+        }
+
+        .admin-edit-grid .admin-field:last-child,
+        .admin-edit-grid .admin-field:nth-last-child(2) {
+            grid-column: span 2;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 14px 28px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            cursor: pointer;
+            border: 0;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #111111;
+            box-shadow: 0 0 0 1px rgba(255, 208, 40, 0.2), 0 16px 34px rgba(255, 208, 40, 0.24);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-danger {
+            background: rgba(255, 112, 112, 0.12);
+            color: #ffb0b0;
+            border: 1px solid rgba(255, 112, 112, 0.28);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-product-actions {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-top: 0.95rem;
+        }
+
+        .admin-products-toolbar {
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-filter-form {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(180px, 0.8fr) auto;
+            gap: 0.8rem;
+        }
+
+        .admin-toolbar-copy {
+            display: grid;
+            gap: 0.3rem;
+        }
+
+        .admin-results-pill {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-size: 0.82rem;
+        }
+
+        .admin-empty-state {
+            margin-top: 1rem;
+            padding: 1rem 1.1rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--muted);
+        }
+
+        .admin-order-note {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .admin-order-status {
+            min-height: 1.4rem;
+            color: var(--accent);
+            font-size: 0.88rem;
+        }
+
+        .admin-tools {
+            margin-top: 1.5rem;
+            padding-top: 1.3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .admin-tools h3,
+        .admin-activity h2 {
+            margin-bottom: 0.55rem;
+            font-size: 1.08rem;
+        }
+
+        .admin-tools-grid {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .admin-import-form {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .admin-activity {
+            max-width: 1200px;
+            margin: 0 auto 1.5rem;
+            padding: 1.4rem;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .admin-activity-shell {
+            display: grid;
+            gap: 1.1rem;
+        }
+
+        .admin-activity-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .admin-activity-intro {
+            padding: 1.2rem 1.25rem;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background:
+                linear-gradient(135deg, rgba(255, 208, 40, 0.1), transparent 38%),
+                rgba(255, 255, 255, 0.03);
+        }
+
+        .admin-activity-intro p {
+            max-width: 62ch;
+        }
+
+        .admin-activity-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem;
+        }
+
+        .admin-activity-stat {
+            padding: 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .admin-activity-stat span {
+            display: block;
+            margin-bottom: 0.35rem;
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .admin-activity-stat strong {
+            display: block;
+            color: var(--accent);
+            font-size: 1.5rem;
+            line-height: 1;
+            margin-bottom: 0.3rem;
+        }
+
+        .admin-activity-stat p {
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .admin-activity-list-shell {
+            padding: 1rem;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .admin-activity-list-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-activity-list-head p {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .admin-timeline-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.42rem 0.78rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font-size: 0.82rem;
+        }
+
+        .activity-list {
+            margin-top: 1rem;
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .activity-item {
+            display: grid;
+            gap: 0.55rem;
+            padding: 0.9rem 1rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left-width: 4px;
+        }
+
+        .activity-item-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .activity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.42rem 0.78rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .activity-badge-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.3rem;
+            height: 1.3rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.08);
+            color: currentColor;
+        }
+
+        .activity-item.create,
+        .activity-item.import,
+        .activity-item.restore {
+            border-left-color: rgba(84, 214, 122, 0.9);
+        }
+
+        .activity-item.create {
+            background: linear-gradient(180deg, rgba(34, 92, 52, 0.96), rgba(21, 60, 34, 0.96));
+            border-color: rgba(84, 214, 122, 0.35);
+            box-shadow: inset 0 0 0 1px rgba(84, 214, 122, 0.12), 0 14px 28px rgba(0, 0, 0, 0.18);
+        }
+
+        .activity-item.create .activity-badge,
+        .activity-item.import .activity-badge,
+        .activity-item.restore .activity-badge {
+            color: #98f1ae;
+            background: rgba(84, 214, 122, 0.1);
+            border-color: rgba(84, 214, 122, 0.18);
+        }
+
+        .activity-item.create strong {
+            color: #effff3;
+        }
+
+        .activity-item.create p,
+        .activity-item.create time {
+            color: rgba(239, 255, 243, 0.82);
+        }
+
+        .activity-item.update,
+        .activity-item.featured,
+        .activity-item.reorder,
+        .activity-item.password,
+        .activity-item.login {
+            border-left-color: rgba(255, 208, 40, 0.9);
+        }
+
+        .activity-item.update .activity-badge,
+        .activity-item.featured .activity-badge,
+        .activity-item.reorder .activity-badge,
+        .activity-item.password .activity-badge,
+        .activity-item.login .activity-badge {
+            color: var(--accent);
+            background: rgba(255, 208, 40, 0.1);
+            border-color: rgba(255, 208, 40, 0.18);
+        }
+
+        .activity-item.delete,
+        .activity-item.logout {
+            border-left-color: rgba(255, 112, 112, 0.9);
+        }
+
+        .activity-item.delete {
+            background: linear-gradient(180deg, rgba(92, 34, 34, 0.96), rgba(60, 21, 21, 0.96));
+            border-color: rgba(255, 112, 112, 0.35);
+            box-shadow: inset 0 0 0 1px rgba(255, 112, 112, 0.12), 0 14px 28px rgba(0, 0, 0, 0.18);
+        }
+
+        .activity-item.delete .activity-badge,
+        .activity-item.logout .activity-badge {
+            color: #ffb0b0;
+            background: rgba(255, 112, 112, 0.12);
+            border-color: rgba(255, 112, 112, 0.22);
+        }
+
+        .activity-item.delete strong {
+            color: #fff0f0;
+        }
+
+        .activity-item.delete p,
+        .activity-item.delete time {
+            color: rgba(255, 240, 240, 0.82);
+        }
+
+        .activity-item strong {
+            color: var(--text);
+        }
+
+        .activity-item time,
+        .activity-item p {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .activity-item p {
+            line-height: 1.55;
+        }
+
+        .admin-subsection {
+            margin-top: 1.5rem;
+            padding-top: 1.3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .admin-subsection h3 {
+            margin-bottom: 0.45rem;
+            font-size: 1.08rem;
+        }
+
+        .admin-login-card > h2,
+        .admin-panel > h2,
+        .admin-products > h2 {
+            letter-spacing: -0.03em;
+        }
+
+        .admin-security-note {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        @media (max-width: 980px) {
+            .admin-header-shell,
+            .admin-product-layout,
+            .admin-activity-hero {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-panel {
+                position: static;
+            }
+
+            .admin-preview.admin-preview-product img {
+                min-height: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .page-shell {
+                border-radius: 0;
+            }
+
+            .nav,
+            .admin-section {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .admin-section {
+                padding-top: 32px;
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .admin-summary-grid,
+            .admin-filter-form {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tab-buttons,
+            .admin-activity-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tab-buttons {
+                display: grid;
+                width: 100%;
+            }
+
+            .admin-header-shell {
+                padding: 1rem;
+            }
+
+            .admin-header-card,
+            .admin-login-card,
+            .admin-panel,
+            .admin-products,
+            .admin-activity {
+                border-radius: 22px;
+            }
+
+            .admin-edit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-edit-grid .admin-field:last-child,
+            .admin-edit-grid .admin-field:nth-last-child(2) {
+                grid-column: span 1;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .admin-product-actions,
+            .admin-actions,
+            .admin-header-actions {
+                display: grid;
+            }
+
+            .admin-tabs {
+                padding: 1rem;
+            }
+
+            .admin-header-mini-grid,
+            .admin-summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="toast-stack" aria-live="polite" aria-atomic="true">
+        {% for category, message in messages %}
+        <div class="toast {{ category }}" data-toast>
+            <span class="toast-title">{{ 'Success' if category == 'success' else 'Notice' }}</span>
+            <div>{{ message }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="page-shell">
+        <div class="nav">
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-mark">🐝</span>
+                <span>FreeBee</span>
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('home', _anchor='collections') }}">Collections</a>
+                <a href="{{ url_for('admin') }}" class="active">Admin</a>
+                {% if admin_authenticated %}
+                <form method="post" action="{{ url_for('admin_logout') }}" class="nav-inline-form">
+                    <button type="submit" class="nav-link-button is-logout">Logout</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="admin-section" id="admin-panel">
+            <div class="admin-header">
+                <div class="admin-header-shell">
+                    <div class="admin-header-copy">
+                        <span class="admin-eyebrow">Store Control Room</span>
+                        <h1>FreeBee Admin</h1>
+                        <p>{% if admin_authenticated %}Add and update products in your SQLite catalog from a dedicated admin page without mixing management tools into the storefront landing page.{% else %}Log in to manage the catalog, featured products, and storefront order from one place.{% endif %}</p>
+                        <div class="admin-header-actions">
+                            {% if admin_authenticated %}
+                            <a href="#catalog-panel" class="admin-header-chip">Catalog Studio</a>
+                            <a href="#activity-panel" class="admin-header-chip">Activity Feed</a>
+                            <span class="admin-header-chip">Drag, edit, and reorder from one view</span>
+                            {% else %}
+                            <span class="admin-header-chip">Protected access for admins only</span>
+                            <span class="admin-header-chip">Password changes stay in settings</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="admin-header-card">
+                        {% if admin_authenticated %}
+                        <span class="admin-header-card-label">Today at a glance</span>
+                        <strong class="admin-header-card-value">{{ admin_summary.total_products }}</strong>
+                        <p>Products currently available to manage inside the catalog workspace.</p>
+                        <div class="admin-header-mini-grid">
+                            <div class="admin-header-mini-item">
+                                <span>Featured</span>
+                                <strong>{{ admin_summary.featured_count }}</strong>
+                            </div>
+                            <div class="admin-header-mini-item">
+                                <span>Low Stock</span>
+                                <strong>{{ admin_summary.low_stock_count }}</strong>
+                            </div>
+                        </div>
+                        {% else %}
+                        <span class="admin-header-card-label">Secure Access</span>
+                        <strong class="admin-header-card-value">01</strong>
+                        <p>Single protected entry point for product management, imports, and admin password updates.</p>
+                        <div class="admin-header-mini-grid">
+                            <div class="admin-header-mini-item">
+                                <span>Catalog</span>
+                                <strong>Live</strong>
+                            </div>
+                            <div class="admin-header-mini-item">
+                                <span>Login</span>
+                                <strong>Required</strong>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if not admin_authenticated %}
+            <div class="admin-login-shell">
+                <div class="admin-login-card">
+                    <span class="admin-section-tag">Admin Access</span>
+                    <h2>Admin Login</h2>
+                    <p>Enter the configured admin password to unlock product management tools.</p>
+                    <form method="post" action="{{ url_for('admin_login') }}" class="admin-form">
+                        <div class="admin-field">
+                            <label for="admin-password">Password</label>
+                            <input class="admin-input" id="admin-password" name="password" type="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login to Admin</button>
+                    </form>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <ul class="flash-list">
+                        {% for category, message in messages %}
+                        <li class="flash-item {{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+
+                    <div class="admin-subsection">
+                        <h3>Security</h3>
+                        {% if password_managed_externally %}
+                        <p class="admin-security-note">Admin password eka `FREEBEE_ADMIN_PASSWORD` environment variable eken manage karanawa. E nisa me page eken password change karanna be.</p>
+                        {% else %}
+                        <p class="admin-security-note">Current password eka dila aluth password ekak set karanna puluwan. Me change eka SQLite settings walata save wenawa.</p>
+                        <form method="post" action="{{ url_for('change_admin_password') }}" class="admin-form">
+                            <div class="admin-field">
+                                <label for="current-password">Current Password</label>
+                                <input class="admin-input" id="current-password" name="current_password" type="password" required>
+                            </div>
+                            <div class="admin-field">
+                                <label for="new-password">New Password</label>
+                                <input class="admin-input" id="new-password" name="new_password" type="password" minlength="6" required>
+                            </div>
+                            <div class="admin-field">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input class="admin-input" id="confirm-password" name="confirm_password" type="password" minlength="6" required>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Update Password</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+
+            <div class="admin-summary-grid">
+                <div class="admin-summary-card">
+                    <div class="admin-summary-top">
+                        <span class="admin-summary-label">Categories</span>
+                        <span class="admin-summary-icon">TAG</span>
+                    </div>
+                    <span class="admin-summary-value">{{ admin_summary.category_count }}</span>
+                    <span class="admin-summary-note">Unique collection groups</span>
+                </div>
+                <div class="admin-summary-card">
+                    <div class="admin-summary-top">
+                        <span class="admin-summary-label">Low Stock</span>
+                        <span class="admin-summary-icon">LOW</span>
+                    </div>
+                    <span class="admin-summary-value">{{ admin_summary.low_stock_count }}</span>
+                    <span class="admin-summary-note">Needs restock attention</span>
+                </div>
+                <div class="admin-summary-card">
+                    <div class="admin-summary-top">
+                        <span class="admin-summary-label">Out of Stock</span>
+                        <span class="admin-summary-icon">OUT</span>
+                    </div>
+                    <span class="admin-summary-value">{{ admin_summary.out_of_stock_count }}</span>
+                    <span class="admin-summary-note">Currently unavailable items</span>
+                </div>
+            </div>
+
+            {% if last_deleted_product %}
+            <div class="admin-undo">
+                <p>Last deleted product: <strong>{{ last_deleted_product.name }}</strong>. Undo if that removal was a mistake.</p>
+                <form method="post" action="{{ url_for('undo_delete_product') }}">
+                    <button type="submit" class="btn btn-secondary">Undo Delete</button>
+                </form>
+            </div>
+            {% endif %}
+
+            <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+                <div class="admin-tabs-copy">
+                    <strong>Workspace Sections</strong>
+                    <span>Jump between product operations and the latest admin timeline.</span>
+                </div>
+                <div class="admin-tab-buttons">
+                    <button type="button" class="admin-tab-button is-active" data-tab-target="catalog-panel" role="tab" aria-selected="true">Catalog Management</button>
+                    <button type="button" class="admin-tab-button" data-tab-target="activity-panel" role="tab" aria-selected="false">Recent Activity</button>
+                </div>
+            </div>
+
+            <section class="admin-tab-panel is-active" id="catalog-panel" role="tabpanel">
+            <div class="admin-shell">
+                <div class="admin-panel">
+                    <span class="admin-section-tag">Create Product</span>
+                    <h2>Add Product</h2>
+                    <p>Create a new product directly in the SQLite catalog. Use a static image path like uploads/user.png or any file inside static.</p>
+                    <div class="admin-preview">
+                        <img src="{{ url_for('static', filename='uploads/user.png') }}" alt="New product preview" data-preview-target="new-product-preview">
+                        <span class="admin-preview-label">Live preview for the image path above</span>
+                    </div>
+                    <form method="post" action="{{ url_for('add_product') }}" class="admin-form" enctype="multipart/form-data">
+                        <div class="admin-field">
+                            <label for="new-name">Product Name</label>
+                            <input class="admin-input" id="new-name" name="name" type="text" placeholder="Enter product name" required>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-category">Category</label>
+                            <input class="admin-input" id="new-category" name="category" type="text" placeholder="Enter category" required>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-price">Price</label>
+                            <input class="admin-input" id="new-price" name="price" type="number" min="0" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-stock-quantity">Stock Quantity</label>
+                            <input class="admin-input" id="new-stock-quantity" name="stock_quantity" type="number" min="0" step="1" placeholder="0" required>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-stock-status">Stock Status</label>
+                            <select class="admin-input admin-select" id="new-stock-status" name="stock_status" required>
+                                <option value="in_stock" selected>In Stock</option>
+                                <option value="low_stock">Low Stock</option>
+                                <option value="out_of_stock">Out of Stock</option>
+                            </select>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-image">Image Path</label>
+                            <select class="admin-input admin-select" id="new-image" name="image_filename" required data-preview-input="new-product-preview">
+                                {% for image_path in image_options %}
+                                <option value="{{ image_path }}" {% if image_path == 'uploads/user.png' %}selected{% endif %}>{{ image_path }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-upload-image">Browse New Image</label>
+                            <input class="admin-input" id="new-upload-image" name="upload_image" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" data-preview-file="new-product-preview" data-preview-select="new-image">
+                            <span class="admin-upload-note">Choose a file to copy it into uploads and attach it automatically.</span>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-badge">Badge Label</label>
+                            <input class="admin-input" id="new-badge" name="accent_label" type="text" placeholder="New" required>
+                        </div>
+                        <div class="admin-field">
+                            <label for="new-description">Description</label>
+                            <textarea class="admin-textarea" id="new-description" name="description" placeholder="Write a short product description" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </form>
+                    <p class="admin-hint">Changes save directly into the local SQLite database.</p>
+                    <div class="admin-tools">
+                        <h3>Catalog Tools</h3>
+                        <p class="admin-upload-note">Export the current catalog as CSV or import a CSV file with matching product columns.</p>
+                        <div class="admin-tools-grid">
+                            <a href="{{ url_for('export_products_csv') }}" class="btn btn-secondary">Export Products CSV</a>
+                            <form method="post" action="{{ url_for('import_products_csv') }}" class="admin-import-form" enctype="multipart/form-data">
+                                <div class="admin-field">
+                                    <label for="catalog-csv">Import CSV File</label>
+                                    <input class="admin-input" id="catalog-csv" name="csv_file" type="file" accept=".csv" required>
+                                </div>
+                                <button type="submit" class="btn btn-secondary">Import Products CSV</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="admin-subsection">
+                        <h3>Security</h3>
+                        {% if password_managed_externally %}
+                        <p class="admin-security-note">Admin password eka `FREEBEE_ADMIN_PASSWORD` environment variable eken manage karanawa. E nisa me dashboard eken password change karanna be.</p>
+                        {% else %}
+                        <p class="admin-security-note">Current password eka dila aluth password ekak set karanna puluwan. Me change eka SQLite settings walata save wenawa.</p>
+                        <form method="post" action="{{ url_for('change_admin_password') }}" class="admin-form">
+                            <div class="admin-field">
+                                <label for="dashboard-current-password">Current Password</label>
+                                <input class="admin-input" id="dashboard-current-password" name="current_password" type="password" required>
+                            </div>
+                            <div class="admin-field">
+                                <label for="dashboard-new-password">New Password</label>
+                                <input class="admin-input" id="dashboard-new-password" name="new_password" type="password" minlength="6" required>
+                            </div>
+                            <div class="admin-field">
+                                <label for="dashboard-confirm-password">Confirm New Password</label>
+                                <input class="admin-input" id="dashboard-confirm-password" name="confirm_password" type="password" minlength="6" required>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Update Password</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <ul class="flash-list">
+                        {% for category, message in messages %}
+                        <li class="flash-item {{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div class="admin-products">
+                    <span class="admin-section-tag">Catalog Workspace</span>
+                    <h2>Edit Existing Products</h2>
+                    <p>Update any current item and save it back into the same SQLite table.</p>
+                    <form method="get" action="{{ url_for('admin') }}" class="admin-filter-form">
+                        <input class="admin-input" type="text" name="q" value="{{ search_query }}" placeholder="Search by product name, category, or badge" data-select-on-focus>
+                        <select class="admin-input admin-select" name="featured">
+                            <option value="all" {% if featured_filter == 'all' %}selected{% endif %}>All Products</option>
+                            <option value="featured" {% if featured_filter == 'featured' %}selected{% endif %}>Featured Only</option>
+                            <option value="regular" {% if featured_filter == 'regular' %}selected{% endif %}>Regular Only</option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary">Filter</button>
+                    </form>
+                    <div class="admin-products-toolbar">
+                        <div class="admin-toolbar-copy">
+                            <span class="admin-results-pill">{{ all_products|length }} products shown</span>
+                            <p class="admin-order-note">Drag cards to change storefront order, then save the new arrangement.</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="save-order-button">Save Card Order</button>
+                    </div>
+                    <div class="admin-order-status" id="admin-order-status"></div>
+                    <div class="admin-product-list" id="admin-product-list">
+                        {% if all_products %}
+                        {% for product in all_products %}
+                        <article class="admin-product-card {% if product.featured %}is-featured{% endif %}" data-product-id="{{ product.id }}" draggable="true">
+                            <div class="admin-product-head">
+                                <h3>{{ product.name }}</h3>
+                                <span class="admin-product-id">ID {{ product.id }}</span>
+                            </div>
+                            <div class="admin-product-topline">
+                                <span class="drag-handle">⋮⋮ Drag card</span>
+                                <span class="featured-pill {% if not product.featured %}is-off{% endif %}">{% if product.featured %}Featured On{% else %}Featured Off{% endif %}</span>
+                                <span class="stock-pill {{ product.stock_status|replace('_', '-') }}">{{ product.stock_status|replace('_', ' ') }} • {{ product.stock_quantity }}</span>
+                            </div>
+                            <div class="admin-product-layout">
+                                <div class="admin-preview admin-preview-product">
+                                    <img src="{{ url_for('static', filename=product.image_filename) }}" alt="{{ product.name }} preview" data-preview-target="product-preview-{{ product.id }}">
+                                    <span class="admin-preview-label">Current image preview</span>
+                                </div>
+                                <div class="admin-product-content">
+                                    <form method="post" action="{{ url_for('edit_product', product_id=product.id) }}" class="admin-edit-form" enctype="multipart/form-data">
+                                        <div class="admin-edit-grid">
+                                            <div class="admin-field">
+                                                <label for="name-{{ product.id }}">Product Name</label>
+                                                <input class="admin-input" id="name-{{ product.id }}" name="name" type="text" value="{{ product.name }}" required data-select-on-focus>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="category-{{ product.id }}">Category</label>
+                                                <input class="admin-input" id="category-{{ product.id }}" name="category" type="text" value="{{ product.category }}" required data-select-on-focus>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="price-{{ product.id }}">Price</label>
+                                                <input class="admin-input" id="price-{{ product.id }}" name="price" type="number" min="0" step="0.01" value="{{ '%.2f'|format(product.price) }}" required data-select-on-focus>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="stock-quantity-{{ product.id }}">Stock Quantity</label>
+                                                <input class="admin-input" id="stock-quantity-{{ product.id }}" name="stock_quantity" type="number" min="0" step="1" value="{{ product.stock_quantity }}" required data-select-on-focus>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="stock-status-{{ product.id }}">Stock Status</label>
+                                                <select class="admin-input admin-select" id="stock-status-{{ product.id }}" name="stock_status" required>
+                                                    <option value="in_stock" {% if product.stock_status == 'in_stock' %}selected{% endif %}>In Stock</option>
+                                                    <option value="low_stock" {% if product.stock_status == 'low_stock' %}selected{% endif %}>Low Stock</option>
+                                                    <option value="out_of_stock" {% if product.stock_status == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+                                                </select>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="image-{{ product.id }}">Image Path</label>
+                                                <select class="admin-input admin-select" id="image-{{ product.id }}" name="image_filename" required data-preview-input="product-preview-{{ product.id }}">
+                                                    {% for image_path in image_options %}
+                                                    <option value="{{ image_path }}" {% if image_path == product.image_filename %}selected{% endif %}>{{ image_path }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="upload-image-{{ product.id }}">Browse New Image</label>
+                                                <input class="admin-input" id="upload-image-{{ product.id }}" name="upload_image" type="file" accept=".png,.jpg,.jpeg,.gif,.webp" data-preview-file="product-preview-{{ product.id }}" data-preview-select="image-{{ product.id }}">
+                                                <span class="admin-upload-note">Choose a file to copy it into uploads and replace the selected image.</span>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="badge-{{ product.id }}">Badge Label</label>
+                                                <input class="admin-input" id="badge-{{ product.id }}" name="accent_label" type="text" value="{{ product.accent_label }}" required data-select-on-focus>
+                                            </div>
+                                            <div class="admin-field">
+                                                <label for="description-{{ product.id }}">Description</label>
+                                                <textarea class="admin-textarea" id="description-{{ product.id }}" name="description" required data-select-on-focus>{{ product.description }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="admin-actions">
+                                            <button type="submit" class="btn btn-secondary">Save Changes</button>
+                                        </div>
+                                    </form>
+                                    <div class="admin-product-actions">
+                                        <form method="post" action="{{ url_for('toggle_featured_product', product_id=product.id) }}">
+                                            <button type="submit" class="btn btn-secondary">{% if product.featured %}Remove Featured{% else %}Mark Featured{% endif %}</button>
+                                        </form>
+                                        <form method="post" action="{{ url_for('remove_product', product_id=product.id) }}" onsubmit="return confirm('Delete this product?');">
+                                            <button type="submit" class="btn btn-danger">Delete Product</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                        {% else %}
+                        <div class="admin-empty-state">No products matched the current filter.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            </section>
+
+            <section class="admin-tab-panel" id="activity-panel" role="tabpanel">
+                <div class="admin-tab-panel-shell">
+                    <section class="admin-activity">
+                        <div class="admin-activity-shell">
+                            <div class="admin-activity-hero">
+                                <div class="admin-activity-intro">
+                                    <span class="admin-section-tag">Operations Timeline</span>
+                                    <h2>Recent Activity</h2>
+                                    <p>Latest admin actions recorded from product updates, imports, login events, and storefront changes.</p>
+                                </div>
+                                <div class="admin-activity-meta">
+                                    <div class="admin-activity-stat">
+                                        <span>Total Logs</span>
+                                        <strong>{{ admin_summary.activity_count }}</strong>
+                                        <p>All saved admin events in the activity history.</p>
+                                    </div>
+                                    <div class="admin-activity-stat">
+                                        <span>Attention Needed</span>
+                                        <strong>{{ admin_summary.low_stock_count + admin_summary.out_of_stock_count }}</strong>
+                                        <p>Products currently low or out of stock.</p>
+                                    </div>
+                                    <div class="admin-activity-stat">
+                                        <span>Featured Live</span>
+                                        <strong>{{ admin_summary.featured_count }}</strong>
+                                        <p>Items highlighted on the storefront right now.</p>
+                                    </div>
+                                    <div class="admin-activity-stat">
+                                        <span>Latest Entry</span>
+                                        <strong>{% if recent_activity %}{{ recent_activity[0].action|replace('_', ' ')|title }}{% else %}None{% endif %}</strong>
+                                        <p>{% if recent_activity %}{{ recent_activity[0].created_at_display }}{% else %}No activity has been logged yet.{% endif %}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="admin-activity-list-shell">
+                                <div class="admin-activity-list-head">
+                                    <div>
+                                        <h3>Admin Timeline</h3>
+                                        <p>Ordered from newest to oldest so recent changes stay easy to track.</p>
+                                    </div>
+                                    <span class="admin-timeline-pill">{{ recent_activity|length }} recent events</span>
+                                </div>
+                                {% if recent_activity %}
+                                <div class="activity-list">
+                                    {% for item in recent_activity %}
+                                    {% set activity_class = 'update' %}
+                                    {% set activity_mark = 'UP' %}
+                                    {% if 'delete' in item.action %}
+                                        {% set activity_class = 'delete' %}
+                                        {% set activity_mark = 'DL' %}
+                                    {% elif 'create' in item.action or 'add' in item.action %}
+                                        {% set activity_class = 'create' %}
+                                        {% set activity_mark = 'AD' %}
+                                    {% elif 'import' in item.action %}
+                                        {% set activity_class = 'import' %}
+                                        {% set activity_mark = 'IM' %}
+                                    {% elif 'restore' in item.action or 'undo' in item.action %}
+                                        {% set activity_class = 'restore' %}
+                                        {% set activity_mark = 'RE' %}
+                                    {% elif 'feature' in item.action %}
+                                        {% set activity_class = 'featured' %}
+                                        {% set activity_mark = 'FT' %}
+                                    {% elif 'reorder' in item.action or 'order' in item.action %}
+                                        {% set activity_class = 'reorder' %}
+                                        {% set activity_mark = 'OD' %}
+                                    {% elif 'password' in item.action %}
+                                        {% set activity_class = 'password' %}
+                                        {% set activity_mark = 'PW' %}
+                                    {% elif 'login' in item.action %}
+                                        {% set activity_class = 'login' %}
+                                        {% set activity_mark = 'IN' %}
+                                    {% elif 'logout' in item.action %}
+                                        {% set activity_class = 'logout' %}
+                                        {% set activity_mark = 'OUT' %}
+                                    {% endif %}
+                                    <article class="activity-item {{ activity_class }}">
+                                        <div class="activity-item-head">
+                                            <span class="activity-badge">
+                                                <span class="activity-badge-mark">{{ activity_mark }}</span>
+                                                <strong>{{ item.action|replace('_', ' ')|title }}</strong>
+                                            </span>
+                                            <time datetime="{{ item.created_at_iso }}">{{ item.created_at_display }}</time>
+                                        </div>
+                                        <p>{{ item.details }}</p>
+                                    </article>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="admin-empty-state">No admin activity recorded yet.</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const staticBase = {{ url_for('static', filename='')|tojson }};
+            const previewInputs = document.querySelectorAll('[data-preview-input]');
+            const previewFiles = document.querySelectorAll('[data-preview-file]');
+            const clickClearFields = document.querySelectorAll('[data-select-on-focus]');
+            const adminTabButtons = document.querySelectorAll('[data-tab-target]');
+            const adminTabPanels = document.querySelectorAll('.admin-tab-panel');
+            const productList = document.querySelector('#admin-product-list');
+            const saveOrderButton = document.querySelector('#save-order-button');
+            const orderStatus = document.querySelector('#admin-order-status');
+            const toasts = document.querySelectorAll('[data-toast]');
+
+            const resolveImagePath = (value) => {
+                const trimmed = value.trim();
+
+                if (!trimmed) {
+                    return `${staticBase}uploads/user.png`;
+                }
+
+                if (/^https?:\/\//i.test(trimmed)) {
+                    return trimmed;
+                }
+
+                return `${staticBase}${trimmed.replace(/^\/+/, '')}`;
+            };
+
+            previewInputs.forEach((input) => {
+                const targetName = input.dataset.previewInput;
+                const previewImage = document.querySelector(`[data-preview-target="${targetName}"]`);
+
+                if (!previewImage) {
+                    return;
+                }
+
+                const syncPreview = () => {
+                    previewImage.src = resolveImagePath(input.value);
+                };
+
+                input.addEventListener('input', syncPreview);
+                input.addEventListener('change', syncPreview);
+                previewImage.addEventListener('error', () => {
+                    previewImage.src = `${staticBase}uploads/user.png`;
+                });
+                syncPreview();
+            });
+
+            previewFiles.forEach((input) => {
+                const targetName = input.dataset.previewFile;
+                const previewImage = document.querySelector(`[data-preview-target="${targetName}"]`);
+                const linkedSelect = document.getElementById(input.dataset.previewSelect);
+
+                if (!previewImage) {
+                    return;
+                }
+
+                input.addEventListener('change', () => {
+                    const selectedFile = input.files && input.files[0];
+
+                    if (!selectedFile) {
+                        if (linkedSelect) {
+                            previewImage.src = resolveImagePath(linkedSelect.value);
+                        }
+                        return;
+                    }
+
+                    previewImage.src = URL.createObjectURL(selectedFile);
+                });
+            });
+
+            clickClearFields.forEach((field) => {
+                const originalValue = field.value;
+                let pointerFocused = false;
+
+                field.dataset.originalValue = originalValue;
+
+                field.addEventListener('pointerdown', () => {
+                    pointerFocused = true;
+                });
+
+                field.addEventListener('focus', () => {
+                    if (!pointerFocused) {
+                        return;
+                    }
+
+                    if (field.value === field.dataset.originalValue) {
+                        field.value = '';
+                    }
+
+                    pointerFocused = false;
+                });
+
+                field.addEventListener('blur', () => {
+                    pointerFocused = false;
+
+                    if (field.value.trim() === '') {
+                        field.value = field.dataset.originalValue || '';
+                    }
+                });
+            });
+
+            toasts.forEach((toast, index) => {
+                const dismissToast = () => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-8px)';
+                    window.setTimeout(() => toast.remove(), 180);
+                };
+
+                window.setTimeout(dismissToast, 3400 + (index * 220));
+                toast.addEventListener('click', dismissToast);
+            });
+
+            adminTabButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.tabTarget;
+
+                    adminTabButtons.forEach((item) => {
+                        item.classList.remove('is-active');
+                        item.setAttribute('aria-selected', 'false');
+                    });
+
+                    adminTabPanels.forEach((panel) => {
+                        panel.classList.remove('is-active');
+                    });
+
+                    button.classList.add('is-active');
+                    button.setAttribute('aria-selected', 'true');
+                    document.getElementById(targetId)?.classList.add('is-active');
+                });
+            });
+
+            if (!productList || !saveOrderButton || !orderStatus) {
+                return;
+            }
+
+            let draggedCard = null;
+
+            const getDragAfterElement = (container, y) => {
+                const draggableCards = [...container.querySelectorAll('.admin-product-card:not(.dragging)')];
+
+                return draggableCards.reduce((closest, card) => {
+                    const box = card.getBoundingClientRect();
+                    const offset = y - box.top - (box.height / 2);
+
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset, element: card };
+                    }
+
+                    return closest;
+                }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+            };
+
+            productList.querySelectorAll('.admin-product-card').forEach((card) => {
+                card.addEventListener('dragstart', () => {
+                    draggedCard = card;
+                    productList.classList.add('is-dragging');
+                    card.classList.add('dragging');
+                });
+
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                    productList.classList.remove('is-dragging');
+                    draggedCard = null;
+                });
+            });
+
+            productList.addEventListener('dragover', (event) => {
+                event.preventDefault();
+
+                if (!draggedCard) {
+                    return;
+                }
+
+                const afterElement = getDragAfterElement(productList, event.clientY);
+                if (afterElement) {
+                    productList.insertBefore(draggedCard, afterElement);
+                } else {
+                    productList.appendChild(draggedCard);
+                }
+            });
+
+            saveOrderButton.addEventListener('click', async () => {
+                const orderedIds = [...productList.querySelectorAll('.admin-product-card')].map((card) => Number(card.dataset.productId));
+                orderStatus.textContent = 'Saving order...';
+
+                try {
+                    const response = await fetch('{{ url_for('reorder_products') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ ordered_ids: orderedIds }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Could not save order');
+                    }
+
+                    orderStatus.textContent = 'Card order saved.';
+                } catch (error) {
+                    orderStatus.textContent = 'Failed to save order.';
+                }
+            });
+        }());
+    </script>
+</body>
+</html>

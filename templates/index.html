@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreeBee - Style Without Limits</title>
+    <style>
+        :root {
+            --bg: #111111;
+            --panel: rgba(255, 255, 255, 0.04);
+            --panel-strong: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f4f1e8;
+            --muted: #aaa59a;
+            --accent: #ffd028;
+            --accent-soft: rgba(255, 208, 40, 0.18);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(255, 208, 40, 0.06), transparent 30%),
+                linear-gradient(180deg, #1a1a1a 0%, #111111 100%);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 14px;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .cursor-trail path {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .cursor-trail-core {
+            stroke: rgba(255, 208, 40, 0.95);
+            stroke-width: 2.2;
+        }
+
+        .cursor-trail-glow {
+            stroke: rgba(255, 208, 40, 0.34);
+            stroke-width: 10;
+            filter: blur(10px);
+        }
+
+        .page-shell {
+            max-width: 1440px;
+            margin: 0 auto;
+            border-radius: 28px;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 26px 38px;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .brand-mark {
+            display: inline-block;
+            color: var(--accent);
+            font-size: 1.7rem;
+            transform: scaleX(-1);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.2rem;
+        }
+
+        .nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.98rem;
+            transition: color 0.25s ease;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--text);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 56px 38px 72px;
+            background:
+                radial-gradient(circle at 78% 42%, rgba(255, 208, 40, 0.06), transparent 20%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+        }
+
+        .hero-flight {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        .hero-flight svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .hero-flight-trail-glow {
+            fill: none;
+            stroke: rgba(255, 208, 40, 0.08);
+            stroke-width: 16;
+            filter: blur(12px);
+            stroke-linecap: round;
+            opacity: 0;
+        }
+
+        .hero-flight-trail-core {
+            fill: none;
+            stroke: transparent;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-dasharray: none;
+            opacity: 0;
+        }
+
+        .hero-flight-bee {
+            transform-box: fill-box;
+            transform-origin: center;
+            will-change: transform, opacity;
+        }
+
+        .hero-flight-bee text {
+            fill: var(--accent);
+            font-size: 30px;
+            text-anchor: middle;
+            dominant-baseline: central;
+            filter: drop-shadow(0 0 10px rgba(255, 208, 40, 0.55));
+        }
+
+        .hero-flight-bee-right,
+        .hero-flight-bee-left {
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .hero-flight-bee-left {
+            transform: scale(-1, 1);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 72px 72px;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 72px;
+            right: 120px;
+            width: 340px;
+            height: 340px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 34px;
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .hero-shell {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .hero-copy {
+            max-width: 640px;
+            padding: 24px 0 0;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--accent);
+            font-size: 0.82rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5.4rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.4rem;
+        }
+
+        .hero h1 .accent {
+            color: var(--accent);
+            text-shadow: 0 0 12px rgba(255, 208, 40, 0.45), 0 0 28px rgba(255, 208, 40, 0.2);
+        }
+
+        .hero p {
+            max-width: 580px;
+            font-size: 1.05rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 14px 28px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #111111;
+            box-shadow: 0 0 0 1px rgba(255, 208, 40, 0.2), 0 16px 34px rgba(255, 208, 40, 0.24);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-visual {
+            position: relative;
+            min-height: 560px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+        }
+
+        .hero-lines,
+        .hero-lines::before,
+        .hero-lines::after {
+            position: absolute;
+            content: '';
+            background: linear-gradient(180deg, rgba(255, 208, 40, 0.5), rgba(255, 208, 40, 0));
+            width: 1px;
+        }
+
+        .hero-lines {
+            top: 30px;
+            left: 18%;
+            height: 280px;
+            opacity: 0.35;
+        }
+
+        .hero-lines::before {
+            top: 12px;
+            left: 36px;
+            height: 340px;
+        }
+
+        .hero-lines::after {
+            top: 54px;
+            left: 74px;
+            height: 250px;
+        }
+
+        .hero-logo-stage {
+            position: absolute;
+            right: 18px;
+            bottom: 20px;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            border-radius: 0;
+            background: radial-gradient(circle at 62% 62%, rgba(255, 208, 40, 0.16), rgba(255, 208, 40, 0.04) 28%, rgba(255, 208, 40, 0) 62%);
+            overflow: visible;
+        }
+
+        .hero-logo {
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            display: block;
+            transform: scale(3);
+            transform-origin: bottom right;
+            filter: brightness(1.08) contrast(1.12) saturate(1.08) drop-shadow(0 18px 34px rgba(0, 0, 0, 0.42));
+            opacity: 0;
+            animation: heroImageReveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+            will-change: transform, opacity;
+        }
+
+        @keyframes heroImageReveal {
+            from {
+                opacity: 0;
+                transform: translate3d(72px, 36px, 0) scale(2.2);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(3);
+            }
+        }
+
+        .features,
+        .video-showcase,
+        .product-section,
+        .admin-section,
+        .about,
+        .stats,
+        .footer {
+            padding-left: 38px;
+            padding-right: 38px;
+        }
+
+        .features {
+            padding-top: 80px;
+            padding-bottom: 80px;
+            background: #161616;
+            text-align: center;
+        }
+
+        .video-showcase {
+            padding-top: 0;
+            padding-bottom: 0;
+            background: linear-gradient(180deg, #151515 0%, #161616 100%);
+        }
+
+        .video-showcase-shell {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .video-showcase-frame {
+            overflow: hidden;
+            border-radius: 0;
+            border: 0;
+            background: #090909;
+            aspect-ratio: 16 / 7;
+            min-height: 320px;
+        }
+
+        .video-showcase-frame video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            background: #090909;
+        }
+
+        .features h2,
+        .about h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-subtitle,
+        .about p,
+        .card p,
+        .stat-item p,
+        .footer {
+            color: var(--muted);
+        }
+
+        .feature-box {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+        .card {
+            width: 280px;
+            padding: 2rem;
+            text-align: left;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .card-icon {
+            color: var(--accent);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            margin-bottom: 0.8rem;
+            color: var(--text);
+        }
+
+        .about {
+            padding-top: 80px;
+            padding-bottom: 80px;
+            text-align: center;
+            background: #131313;
+        }
+
+        .about-shell {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .about-summary {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .about-details {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            text-align: left;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .about-details.is-visible {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .about-details p {
+            margin: 0;
+        }
+
+        .product-section {
+            padding-top: 80px;
+            padding-bottom: 80px;
+            background: linear-gradient(180deg, #111111 0%, #171717 100%);
+        }
+
+        .product-section-header {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .product-section-copy {
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .product-section-copy h2 {
+            font-size: 2.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .product-section-copy p {
+            color: var(--muted);
+        }
+
+        .product-metrics {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .product-metric {
+            min-width: 150px;
+            padding: 1rem 1.1rem;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .product-metric-label {
+            display: block;
+            margin-bottom: 0.35rem;
+            color: var(--muted);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .product-metric-value {
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .product-grid {
+            max-width: 1200px;
+            margin: 2.2rem auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .product-card {
+            overflow: hidden;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .product-card-image {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .product-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(17, 17, 17, 0.76);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--accent);
+            font-size: 0.76rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .product-card-body {
+            padding: 1.2rem;
+        }
+
+        .product-card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .product-card-price {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .product-card-featured {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0.85rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(255, 208, 40, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(255, 208, 40, 0.16);
+            font-size: 0.8rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .product-card h3 {
+            margin-bottom: 0.65rem;
+            font-size: 1.24rem;
+        }
+
+        .product-card p {
+            color: var(--muted);
+        }
+
+        .admin-section {
+            padding-top: 80px;
+            padding-bottom: 80px;
+            background: #141414;
+        }
+
+        .admin-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+            gap: 1.4rem;
+            align-items: start;
+        }
+
+        .admin-panel,
+        .admin-products {
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .admin-panel {
+            padding: 1.6rem;
+            position: sticky;
+            top: 20px;
+        }
+
+        .admin-panel h2,
+        .admin-products h2 {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .admin-panel p,
+        .admin-products p,
+        .admin-field label,
+        .flash-item {
+            color: var(--muted);
+        }
+
+        .admin-form,
+        .admin-edit-form {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .admin-form {
+            margin-top: 1.4rem;
+        }
+
+        .admin-field {
+            display: grid;
+            gap: 0.4rem;
+        }
+
+        .admin-field label {
+            font-size: 0.86rem;
+            letter-spacing: 0.03em;
+        }
+
+        .admin-input,
+        .admin-textarea {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font: inherit;
+        }
+
+        .admin-input:focus,
+        .admin-textarea:focus {
+            outline: none;
+            border-color: rgba(255, 208, 40, 0.55);
+            box-shadow: 0 0 0 1px rgba(255, 208, 40, 0.18);
+        }
+
+        .admin-textarea {
+            min-height: 116px;
+            resize: vertical;
+        }
+
+        .admin-hint {
+            margin-top: 0.9rem;
+            font-size: 0.9rem;
+        }
+
+        .flash-list {
+            list-style: none;
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1.2rem;
+        }
+
+        .flash-item {
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 600;
+        }
+
+        .flash-item.success {
+            background: rgba(255, 208, 40, 0.12);
+            color: var(--accent);
+        }
+
+        .flash-item.error {
+            background: rgba(255, 112, 112, 0.12);
+            color: #ff9c9c;
+        }
+
+        .admin-products {
+            padding: 1.6rem;
+        }
+
+        .admin-product-list {
+            margin-top: 1.5rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .admin-product-card {
+            padding: 1rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .admin-product-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-product-head h3 {
+            font-size: 1.1rem;
+        }
+
+        .admin-product-id {
+            color: var(--accent);
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .admin-edit-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem;
+        }
+
+        .admin-edit-grid .admin-field:last-child,
+        .admin-edit-grid .admin-field:nth-last-child(2) {
+            grid-column: span 2;
+        }
+
+        .about .btn {
+            margin-top: 1rem;
+        }
+
+        .stats {
+            padding-top: 64px;
+            padding-bottom: 64px;
+            background: linear-gradient(180deg, #171717 0%, #101010 100%);
+            text-align: center;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            min-width: 200px;
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item h3 {
+            color: var(--accent);
+            font-size: 2.2rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 34px;
+            padding-bottom: 34px;
+            background: #0d0d0d;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (max-width: 980px) {
+            .hero-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .product-section-header {
+                align-items: stretch;
+            }
+
+            .admin-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-panel {
+                position: static;
+            }
+
+            .hero-copy {
+                max-width: 100%;
+                text-align: center;
+            }
+
+            .hero-visual {
+                min-height: 460px;
+            }
+
+            .hero-logo-stage {
+                right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .cursor-trail {
+                display: none;
+            }
+
+            .page-shell {
+                border-radius: 0;
+            }
+
+            .nav,
+            .features,
+            .video-showcase,
+            .product-section,
+            .admin-section,
+            .about,
+            .stats,
+            .footer,
+            .hero {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .admin-edit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-edit-grid .admin-field:last-child,
+            .admin-edit-grid .admin-field:nth-last-child(2) {
+                grid-column: span 1;
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                padding-top: 42px;
+                padding-bottom: 56px;
+            }
+
+            .hero::after {
+                display: none;
+            }
+
+            .hero-flight {
+                opacity: 0.72;
+            }
+
+            .hero-flight-bee text {
+                font-size: 24px;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .hero-visual {
+                min-height: 420px;
+            }
+
+            .hero-logo-stage {
+                position: relative;
+                right: auto;
+                bottom: auto;
+                margin: 0 auto;
+                width: 220px;
+                height: 220px;
+            }
+
+            .hero-logo {
+                max-width: 170px;
+                transform: scale(3);
+                transform-origin: bottom center;
+            }
+
+            .video-showcase {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+
+            .video-showcase-frame {
+                min-height: 220px;
+                aspect-ratio: 16 / 9;
+            }
+
+            @keyframes heroImageReveal {
+                from {
+                    opacity: 0;
+                    transform: translate3d(0, 28px, 0) scale(2.1);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate3d(0, 0, 0) scale(3);
+                }
+            }
+
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-logo {
+                opacity: 1;
+                animation: none;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <svg class="cursor-trail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path class="cursor-trail-glow"></path>
+        <path class="cursor-trail-core"></path>
+    </svg>
+
+    <div class="page-shell">
+        <div class="nav">
+            <a href="/" class="brand">
+                <span class="brand-mark">🐝</span>
+                <span class="brand-name">FreeBee</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="#">Collections</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+
+        <div class="hero">
+            <div class="hero-flight" aria-hidden="true">
+                <svg viewBox="0 0 1000 600" preserveAspectRatio="none">
+                    <path class="hero-flight-trail-glow" d="M 56 142 C 132 48, 248 52, 334 126 S 494 270, 620 250 S 830 106, 956 170"></path>
+                    <path class="hero-flight-path hero-flight-trail-core" d="M 56 142 C 132 48, 248 52, 334 126 S 494 270, 620 250 S 830 106, 956 170"></path>
+                    <g class="hero-flight-bee">
+                        <text class="hero-flight-bee-right" x="0" y="0">🐝</text>
+                        <text class="hero-flight-bee-left" x="0" y="0">🐝</text>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="hero-shell">
+                <div class="hero-copy">
+                    <div class="eyebrow">Featured Fashion Drop</div>
+                    <h1>FreeBee<br><span class="accent">Style</span> Without Limits</h1>
+                    <p>Discover bold, modern fashion made for those who love freedom and self-expression. FreeBee brings trendy, comfortable styles that let you wear your confidence and show your unique personality every day.</p>
+                    <div class="hero-actions">
+                        <a href="#collections" class="btn btn-primary">Shop The Drop</a>
+                        <a href="#lookbook-video" class="btn btn-secondary">Explore Lookbook</a>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="hero-lines"></div>
+
+                    <div class="hero-logo-stage">
+                        <img src="{{ url_for('static', filename='uploads/user.png') }}" alt="FreeBee logo" class="hero-logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-showcase" id="lookbook-video">
+            <div class="video-showcase-shell">
+                <div class="video-showcase-frame">
+                    <video autoplay muted loop playsinline preload="auto">
+                        <source src="{{ url_for('static', filename='uploads/HeroVideo.mp4') }}" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Why Choose FreeBee?</h2>
+            <p class="feature-subtitle">Fresh styles that let you express your freedom and confidence.</p>
+            <div class="feature-box">
+                <div class="card">
+                    <div class="card-icon">✦</div>
+                    <h3>Trendy Youth Styles</h3>
+                    <p>Fresh and modern fashion designed for the new generation.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">◆</div>
+                    <h3>Premium Quality</h3>
+                    <p>Carefully selected materials for comfort, durability, and style.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">◉</div>
+                    <h3>Freedom to Express</h3>
+                    <p>Clothing that lets you show your true personality and confidence.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">▣</div>
+                    <h3>Bold &amp; Unique Designs</h3>
+                    <p>Stand out with styles that break the ordinary fashion rules.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-section" id="collections">
+            <div class="product-section-header">
+                <div class="product-section-copy">
+                    <h2>FreeBee Collection</h2>
+                </div>
+            </div>
+
+            <div class="product-grid">
+                {% for product in products %}
+                <article class="product-card">
+                    <div class="product-card-image">
+                        <img src="{{ url_for('static', filename=product.image_filename) }}" alt="{{ product.name }}">
+                        <span class="product-badge">{{ product.accent_label }}</span>
+                    </div>
+                    <div class="product-card-body">
+                        <div class="product-card-meta">
+                            <span>{{ product.category }}</span>
+                            <span class="product-card-price">${{ '%.2f'|format(product.price) }}</span>
+                        </div>
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                        {% if product.featured %}
+                        <span class="product-card-featured">Featured Pick</span>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="about">
+            <div class="about-shell">
+                <h2>About FreeBee</h2>
+                <p class="about-summary">FreeBee is a modern fashion storefront concept focused on bold visuals, curated collections, and a premium digital shopping experience.</p>
+                <button type="button" class="btn btn-primary" data-about-toggle aria-expanded="false" aria-controls="about-details">Read More</button>
+                <div class="about-details" id="about-details" data-about-details>
+                    <p>FreeBee is a modern fashion brand built for the new generation that values freedom, creativity, and individuality. Our goal is to bring stylish, comfortable, and trend-driven clothing that allows people to express themselves confidently.</p>
+                    <p>We focus on bold designs, fresh streetwear inspiration, and carefully selected materials to create pieces that feel as good as they look. Every FreeBee collection is designed to reflect modern lifestyle trends while keeping comfort and quality at the center.</p>
+                    <p>At FreeBee, fashion is more than clothing - it's a way to show who you are. That's why our mission is simple: to help young people wear their freedom and create their own style without limits.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <h3>500+</h3>
+                    <p>Products Curated</p>
+                </div>
+                <div class="stat-item">
+                    <h3>300+</h3>
+                    <p>Happy Customers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>50+</h3>
+                    <p>Fresh Weekly Drops</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Style Support</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>FreeBee - Style Without Limits</p>
+            <p>&copy; 2026 FreeBee. All rights reserved.</p>
+            <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            if (window.matchMedia('(pointer: coarse)').matches) {
+                return;
+            }
+
+            const trail = document.querySelector('.cursor-trail');
+            const glowPath = document.querySelector('.cursor-trail-glow');
+            const corePath = document.querySelector('.cursor-trail-core');
+
+            if (!trail || !glowPath || !corePath) {
+                return;
+            }
+
+            const points = [];
+            const maxPoints = 12;
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            let currentX = mouseX;
+            let currentY = mouseY;
+
+            const buildPath = (pathPoints) => {
+                if (pathPoints.length < 4) {
+                    return '';
+                }
+
+                let path = `M ${pathPoints[0].x} ${pathPoints[0].y}`;
+
+                for (let index = 1; index < pathPoints.length - 1; index += 1) {
+                    const xc = (pathPoints[index].x + pathPoints[index + 1].x) / 2;
+                    const yc = (pathPoints[index].y + pathPoints[index + 1].y) / 2;
+                    path += ` Q ${pathPoints[index].x} ${pathPoints[index].y} ${xc} ${yc}`;
+                }
+
+                const last = pathPoints[pathPoints.length - 1];
+                path += ` T ${last.x} ${last.y}`;
+                return path;
+            };
+
+            const setViewBox = () => {
+                trail.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+            };
+
+            const onPointerMove = (event) => {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            };
+
+            const animate = () => {
+                currentX += (mouseX - currentX) * 0.18;
+                currentY += (mouseY - currentY) * 0.18;
+
+                points.unshift({ x: currentX, y: currentY });
+
+                if (points.length > maxPoints) {
+                    points.pop();
+                }
+
+                const path = buildPath(points);
+                glowPath.setAttribute('d', path);
+                corePath.setAttribute('d', path);
+
+                requestAnimationFrame(animate);
+            };
+
+            window.addEventListener('resize', setViewBox);
+            window.addEventListener('mousemove', onPointerMove, { passive: true });
+            setViewBox();
+            animate();
+        }());
+
+        (function () {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return;
+            }
+
+            const path = document.querySelector('.hero-flight-path');
+            const glow = document.querySelector('.hero-flight-trail-glow');
+            const bee = document.querySelector('.hero-flight-bee');
+            const beeRight = document.querySelector('.hero-flight-bee-right');
+            const beeLeft = document.querySelector('.hero-flight-bee-left');
+
+            if (!path || !glow || !bee || !beeRight || !beeLeft) {
+                return;
+            }
+
+            const cycleDuration = 11600;
+            const startTime = performance.now();
+            const pathWidth = 1000;
+            const pathHeight = 600;
+
+            const easeInOut = (value) => value < 0.5
+                ? 4 * value * value * value
+                : 1 - Math.pow(-2 * value + 2, 3) / 2;
+
+            const buildSmoothPath = (points) => {
+                if (points.length < 2) {
+                    return '';
+                }
+
+                let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+
+                for (let index = 1; index < points.length - 1; index += 1) {
+                    const xc = (points[index].x + points[index + 1].x) / 2;
+                    const yc = (points[index].y + points[index + 1].y) / 2;
+                    d += ` Q ${points[index].x.toFixed(2)} ${points[index].y.toFixed(2)} ${xc.toFixed(2)} ${yc.toFixed(2)}`;
+                }
+
+                const last = points[points.length - 1];
+                d += ` T ${last.x.toFixed(2)} ${last.y.toFixed(2)}`;
+                return d;
+            };
+
+            const animateBee = (now) => {
+                const elapsed = (now - startTime) % cycleDuration;
+                const phase = elapsed / cycleDuration;
+                const forward = phase < 0.5;
+                const segment = forward ? phase * 2 : (1 - phase) * 2;
+                const progress = easeInOut(segment);
+                const time = (now - startTime) / 1000;
+                const points = Array.from({ length: 7 }, (_, index) => {
+                    const ratio = index / 6;
+                    const x = 48 + ratio * (pathWidth - 96);
+                    const y = 170
+                        + Math.sin(time * 1.1 + ratio * 4.4) * 82
+                        + Math.cos(time * 0.75 + ratio * 6.1) * 48
+                        + Math.sin(time * 1.7 + ratio * 2.8) * 18;
+
+                    return {
+                        x,
+                        y: Math.max(70, Math.min(pathHeight - 90, y)),
+                    };
+                });
+
+                const d = buildSmoothPath(points);
+                path.setAttribute('d', d);
+                glow.setAttribute('d', d);
+
+                const totalLength = path.getTotalLength();
+                const point = path.getPointAtLength(totalLength * progress);
+                const bob = Math.sin((now - startTime) / 140) * 6;
+                const flutterScale = 1 + Math.sin((now - startTime) / 90) * 0.05;
+                const turnDistance = Math.min(segment, 1 - segment);
+                const turnWindow = Math.min(turnDistance / 0.12, 1);
+                const turnOpacity = 0.3 + (turnWindow * 0.7);
+                const turnSqueeze = 0.28 + (turnWindow * 0.72);
+                const turnStretch = 1.08 - (turnWindow * 0.08);
+                const facingRightOpacity = forward ? 1 - turnWindow : turnWindow;
+                const facingLeftOpacity = forward ? turnWindow : 1 - turnWindow;
+
+                bee.setAttribute(
+                    'transform',
+                    `translate(${point.x.toFixed(2)} ${(point.y + bob).toFixed(2)}) scale(${(flutterScale * turnSqueeze).toFixed(3)}, ${(flutterScale * turnStretch).toFixed(3)})`
+                );
+                bee.style.opacity = turnOpacity.toFixed(3);
+                beeRight.style.opacity = facingRightOpacity.toFixed(3);
+                beeLeft.style.opacity = facingLeftOpacity.toFixed(3);
+                requestAnimationFrame(animateBee);
+            };
+
+            requestAnimationFrame(animateBee);
+        }());
+
+        (function () {
+            const toggleButton = document.querySelector('[data-about-toggle]');
+            const details = document.querySelector('[data-about-details]');
+
+            if (!toggleButton || !details) {
+                return;
+            }
+
+            toggleButton.addEventListener('click', () => {
+                const isVisible = details.classList.toggle('is-visible');
+                toggleButton.setAttribute('aria-expanded', String(isVisible));
+                toggleButton.textContent = isVisible ? 'Show Less' : 'Read More';
+            });
+        }());
+    </script>
+</body>
+</html>
